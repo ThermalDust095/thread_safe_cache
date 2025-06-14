@@ -79,38 +79,8 @@ class LRUCache:
                 # items.append(f"{current.key}:{current.value}:{current.ttl}:{current.created_at}")
                 current = current.next
             print("Cache state: ", " <-> ".join(items))
-        
-
-if __name__ == "__main__":
-    capacity = int(input("Enter the capacity of the LRU Cache: "))
-    cache = LRUCache(capacity)
     
-    while True:
-        print("\nOptions: ")
-        print("1. Put (key, value)")
-        print("2. Get (key)")
-        print("3. Display Cache")
-        print("4. Exit")
-        
-        choice = input("Choose an option: ")
-        if choice == '1':
-            key = int(input("Enter key: "))
-            value = int(input("Enter value: "))
-            ttl = input("Enter Expiry Time: ")
-            ttl = None if ttl == "" else int(ttl)
-            cache.put(key, value, ttl)
-            print(f"Added ({key}, {value}) to the cache.")
-        elif choice == '2':
-            key = int(input("Enter key to retrieve: "))
-            value = cache.get(key)
-            if value != -1:
-                print(f"Retrieved value: {value}")
-            else:
-                print("Key not found in cache.")
-        elif choice == '3':
-            cache.display()
-        elif choice == '4':
-            print("Exiting.")
-            break
-        else:
-            print("Invalid choice. Please try again.")
+    def delete(self, key):
+        with self.lock:
+            if key in self.cache:
+                self.__remove(self.cache[key])

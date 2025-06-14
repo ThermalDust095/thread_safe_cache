@@ -1,8 +1,6 @@
 import time
 import threading
 from memory_cache import LRUCache
-import subprocess
-import sys
 
 class CacheMemoryInterface:
     remove_expired_worker = True
@@ -16,19 +14,20 @@ class CacheMemoryInterface:
             print("1. Put (key, value)")
             print("2. Get (key)")
             print("3. Display Cache")
-            print("4. Disable Background Process for removing expired Nodes")
-            print("5. Exit")
+            print("4. Delete Key from Cache")
+            print("5. Disable Background Process for removing expired Nodes")
+            print("6. Exit")
             
             choice = input("Choose an option: ")
             if choice == '1':
-                key = int(input("Enter key: "))
-                value = int(input("Enter value: "))
+                key = input("Enter key: ")
+                value = input("Enter value: ")
                 ttl = input("Enter Expiry Time: ")
                 ttl = None if ttl == "" else int(ttl)
                 self.cache.put(key, value, ttl)
                 print(f"Added ({key}, {value}) to the cache.")
             elif choice == '2':
-                key = int(input("Enter key to retrieve: "))
+                key = input("Enter key to retrieve: ")
                 value = self.cache.get(key)
                 if value != -1:
                     print(f"Retrieved value: {value}")
@@ -37,8 +36,13 @@ class CacheMemoryInterface:
             elif choice == '3':
                 self.cache.display()
             elif choice == '4':
-                self.disable_remove_expired_nodes()
+                node_to_be_deleted = input("Enter Key to be Deleted: ")
+                self.cache.delete(node_to_be_deleted)
+                print(f"Key is deleted from Cache")
             elif choice == '5':
+                self.disable_remove_expired_nodes()
+                print("Sucessfully Disabled Background process to remove expired nodes")
+            elif choice == '6':
                 print("Exiting.")
                 self.disable_remove_expired_nodes()
                 break
