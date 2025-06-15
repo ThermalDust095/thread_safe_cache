@@ -79,6 +79,7 @@ class LRUCache:
                 # items.append(f"{current.key}:{current.value}:{current.ttl}:{current.created_at}")
                 current = current.next
             print("Cache state: ", " <-> ".join(items))
+            return "Cache state: ", " <-> ".join(items)
     
     def delete(self, key):
         with self.lock:

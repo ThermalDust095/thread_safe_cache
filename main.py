@@ -2,12 +2,12 @@ import time
 import threading
 from memory_cache import LRUCache
 
-class CacheMemoryInterface:
+class ThreadedCacheMemoryInterface(LRUCache):
     remove_expired_worker = True
     
     def __init__(self, capacity):
-        self.cache = LRUCache(capacity)
-    
+        super().__init__(capacity)
+        
     def interact(self):
         while True:
             print("\nOptions: ")
@@ -24,20 +24,20 @@ class CacheMemoryInterface:
                 value = input("Enter value: ")
                 ttl = input("Enter Expiry Time: ")
                 ttl = None if ttl == "" else int(ttl)
-                self.cache.put(key, value, ttl)
+                self.put(key, value, ttl)
                 print(f"Added ({key}, {value}) to the cache.")
             elif choice == '2':
                 key = input("Enter key to retrieve: ")
-                value = self.cache.get(key)
+                value = self.get(key)
                 if value != -1:
                     print(f"Retrieved value: {value}")
                 else:
                     print("Key not found in cache.")
             elif choice == '3':
-                self.cache.display()
+                self.display()
             elif choice == '4':
                 node_to_be_deleted = input("Enter Key to be Deleted: ")
-                self.cache.delete(node_to_be_deleted)
+                self.delete(node_to_be_deleted)
                 print(f"Key is deleted from Cache")
             elif choice == '5':
                 self.disable_remove_expired_nodes()
@@ -52,15 +52,14 @@ class CacheMemoryInterface:
     def remove_expired_nodes_process(self):
         while self.remove_expired_worker:
             time.sleep(5)
-            self.cache.remove_expired()
+            self.remove_expired()
     
     def disable_remove_expired_nodes(self):
         self.remove_expired_worker = False
         
 if __name__ == "__main__":
     capacity = int(input("Please mention the Capacity of your LRU Cache ->: "))
-    cache_memory = CacheMemoryInterface(capacity)
-    #Allowing multiple sessions with threading along -->> Client Server Architecture (Fuck Me)
+    cache_memory = ThreadedCacheMemoryInterface(capacity)
     
     interaction_thread = threading.Thread(target=cache_memory.interact)
     background_process_thread = threading.Thread(target=cache_memory.remove_expired_nodes_process)
